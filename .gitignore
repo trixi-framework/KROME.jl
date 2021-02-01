@@ -1,0 +1,4 @@
+**/Manifest.toml
+deps/*.log
+deps/libkrome.jl
+deps/krome

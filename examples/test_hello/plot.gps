@@ -1,0 +1,9 @@
+reset
+nkrome = 1
+load 'species.gps'
+set key at 2,.9
+set xlabel "time [arbitrary]"
+set ylabel "abundance [arbitrary]"
+plot './fort.66' u 1:(column(krome_idx_FK1)) w l t "FK1",\
+ '' u 1:(column(krome_idx_FK2)) w l t "FK2",\
+ '' u 1:(column(krome_idx_FK3)) w l t "FK3"

@@ -1,0 +1,14 @@
+#This file is a script to initialize the species indexes for gnuplot
+
+
+if(!exists("nkrome")) print "ERROR: first set the value of the column-offset nkrome"
+krome_idx_FK1 = 1 + nkrome
+krome_idx_FK2 = 2 + nkrome
+krome_idx_FK3 = 3 + nkrome
+krome_idx_CR = 4 + nkrome
+krome_idx_g = 5 + nkrome
+krome_idx_Tgas = 6 + nkrome
+krome_idx_dummy = 7 + nkrome
+print "All variables set as e.g. krome_idx_H2"
+print "plot 'your_output' u 1:krome_idx_H2"
+print " the offset is nkrome=",nkrome

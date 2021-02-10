@@ -4,8 +4,9 @@
 Fortran library for including chemistry and microphysics in astrophysics
 simulations.
 
-**NOTE:** This package is highly experimental and currently works only with a
-          single example.
+**NOTE: This package is in its early stages and still highly experimental!
+        Some things might not work yet, and implementation details may change
+        at any time without warning.**
 
 
 ## Prerequisites

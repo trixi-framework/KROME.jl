@@ -23,7 +23,7 @@ Clone this package, enter the package directory, and build the package:
 ```shell
 git clone git@github.com:trixi-framework/KROME.jl.git
 cd KROME.jl
-julia --project= -e 'using Pkg; Pkg.build()'
+julia --project=. -e 'using Pkg; Pkg.build()'
 ```
 
 
@@ -33,10 +33,10 @@ KROME.jl. Right now there is a single example available. To run it, enter the
 package directory, start Julia with `julia --project`, and execute the
 following:
 ```julia
-julia> include("examples/test_hello/test_hello.jl");
-
 julia> isfile("examples/test_hello/julia.66")
 false
+
+julia> include("examples/test_hello/test_hello.jl");
 
 julia> test_hello()
 Test OK!

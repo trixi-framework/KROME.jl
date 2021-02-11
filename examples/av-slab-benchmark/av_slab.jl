@@ -8,7 +8,10 @@ function av_slab(io::IO=stdout)
     n = zeros(nmols) # default abundances (number density)
 
     idx_H = krome_idx_H()[] + 1
+    idx_H2 = krome_idx_H2()[] + 1
+    idx_Hj = krome_idx_Hj()[] + 1
     idx_Cj = krome_idx_Cj()[] + 1
+    idx_CO = krome_idx_CO()[] + 1
     idx_O = krome_idx_O()[] + 1
     idx_E = krome_idx_E()[] + 1
 
@@ -35,7 +38,7 @@ function av_slab(io::IO=stdout)
 
     abar = 1 + abundhe*4. + abundc*12. + abundo*16. + abundSi*28. + abundS*32.
     # == CHANGE HERE, F1: n=1e3 with G0=1e1 or F4: n=10^5.5 with G0=1e5 ==
-    nH = 10.**3 #10.**5.5#(=rho/abar/krome_p_mass()[])
+    nH = 10.0^3 #10.^5.5#(=rho/abar/krome_p_mass()[])
     Ghab = 1.e1*1.69/2. # 1.e5*1.69/2.
     crate = 5.e-17
 
@@ -75,7 +78,7 @@ function av_slab(io::IO=stdout)
       end
 
 
-      if phi < 1e-6 then
+      if phi < 1e-6
         h_gr = 1.225e-13 * dust_to_gas_ratio
       else
         hgrvar1  = 8.074e-6 * phi^1.378e0
@@ -172,7 +175,7 @@ function av_slab(io::IO=stdout)
       NH2 = NH2 + (opt_depth/AV_conversion_factor-NH_old)*n[idx_H2]/nH
       b5 = sqrt(1.38065e-16*T/krome_p_mass()[])/1e5
       x = NH2/5e14
-      H2sh = 0.965/(1+x/b5)**2. + 0.035/sqrt(1+x)*exp(-8.5e-4*sqrt(1+x))
+      H2sh = 0.965/(1+x/b5)^2. + 0.035/sqrt(1+x)*exp(-8.5e-4*sqrt(1+x))
     end
   end
 end

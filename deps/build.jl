@@ -76,7 +76,7 @@ cvts = convert_headers(hdrs, args=include_args) do cursor
   header = CodeLocation(cursor).file
   name   = string(cursor)
 
-  # only wrap the libp4est and libsc headers
+  # only wrap the KROME headers
   dirname, filename = splitdir(header)
   if !(filename in hdrs)
     return false

@@ -166,7 +166,7 @@ function av_slab(io::IO=stdout)
       println(io,
               join(map(fsn, [opt_depth,
                              n[idx_H2],n[idx_H],n[idx_Hj],n[idx_CO],n[idx_Cj],n[idx_E],n[idx_O],
-                             T,H2sh]), "  "))
+                             T,H2sh]), " "))
 
       NH_old = opt_depth/AV_conversion_factor
 

@@ -20,6 +20,8 @@ using Printf
 
 function test_hello()
   cd(@__DIR__) do
+    install_reactions_verbatim()
+
     krome_init() # init krome (mandatory)
 
     nmols = krome_nmols()[] # read Fortran module variable

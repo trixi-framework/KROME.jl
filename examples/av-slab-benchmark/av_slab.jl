@@ -4,6 +4,8 @@ using Printf
 
 function av_slab(io::IO=stdout)
   cd(@__DIR__) do
+    install_reactions_verbatim()
+
     nmols = krome_nmols()[] # read Fortran module variable
     n = zeros(nmols) # default abundances (number density)
 

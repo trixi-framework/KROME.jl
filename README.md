@@ -72,9 +72,16 @@ file. Enter the package directory and execute
 ```shell
 JULIA_KROME_CUSTOM_ARGS="-n;$(pwd)/examples/av-slab-benchmark/react_chnet5;-noRecCheck" julia --project=. -e 'using Pkg; Pkg.build()'
 ```
-After re-building KROME successfully, you also need to copy the
-`reactions_verbatim.dat` file from the directory where KROME was built to the
-current working directory in which you execute 
+After re-building KROME successfully, start Julia with `julia --project` and
+execute the following:
+```julia
+julia> include("examples/av-slab-benchmark/av_slab.jl")
+
+julia> av_slab()
+```
+
+This will start the example and printing the chemical network updates as they
+are computed. Note that this example takes a minute or two to fully run through.
 
 
 ## Authors

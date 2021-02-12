@@ -181,7 +181,7 @@ function av_slab(io::IO=stdout)
 end
 
 # Return formatted value in Fortran scientific notation
-function fsn(value, width=17, precision=8)
+function fsn(value, width=25, precision=16)
   @assert precision <= 64 "precision must be <= 64"
 
   # Extract exponent and base

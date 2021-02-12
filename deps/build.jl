@@ -58,6 +58,12 @@ cd(build_dir) do
   run(make_cmd)
 end
 
+# Copy reactions_verbatim.dat from build directory to deps/
+reactions_source = joinpath(build_dir, "reactions_verbatim.dat")
+reactions_target = joinpath(@__DIR__, "reactions_verbatim.dat")
+@info "Copying '$reactions_source' to '$reactions_target'..."
+cp(reactions_source, reactions_target, force=true)
+
 # Generate C bindings
 @info "Generate C bindings..."
 

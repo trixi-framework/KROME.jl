@@ -1,0 +1,294 @@
+# Rates for the NL97 network implemented as CHEMISTRYNETWORK 5 in FLASH
+
+@common: user_crate, user_Av, user_Tdust,user_H2self,user_Ghab,user_COself,user_h_gr,user_xr_ion,user_uv_ion, user_dust_to_gas_ratio,user_deff
+
+@var: Hnuclei = get_Hnuclei(n(:))
+@var: Te = Tgas*8.617343d-5
+@var: invT = 1d0/Tgas
+@var: lnTe = log(Te)
+@var: T = Tgas
+
+
+@format:idx,R,R,R,P,P,P,P,rate
+
+###### reactions listed for H+ formation/destruction
+
+1,H,E,,H+,E,E,,dexp(-32.71396786d0+13.5365560d0*lnTe-5.73932875d0*(lnTe**2)+1.56315498d0*(lnTe**3)-0.28770560d0*(lnTe**4)+3.48255977d-2*(lnTe**5)-2.63197617d-3*(lnTe**6)+1.11954395d-4*(lnTe**7)-2.03914985d-6*(lnTe**8))
+2,H+,E,,H,g,,,2.753d-14*(315614d0*invT)**1.500d0/((1d0+(115188d0*invT)**0.407d0)**2.242d0)
+@noTab_start
+3,H+,E,,H,g,,,user_h_gr*Hnuclei/max(n(idx_E),1d-40)
+4,H,,,H+,E,g,,1d0*user_crate
+5,H,,,H+,E,g,,1d0*user_xr_ion
+6,H2,,,H,H+,E,g,3.7d-2*user_crate
+7,H,,,H+,E,,,1.d0*user_uv_ion
+@noTab_end
+
+
+###### reactions listed for H2 formation/destruction MINUS!!!! those already listed before
+
+8,H2,E,,H,H,E,,4.4886d-9*T**0.109127d0*exp(-1.01858d5*invT)
+
+@format:idx,R,R,R,P,P,P,P,Tmin,Tmax,rate
+@noTab_start
+@var: t4log = log10(T)-4d0
+@var: ch5 = 1d0/(1d1**(3d0-0.416d0*t4log-0.327d0*t4log*t4log))
+@var: ch6 = 1d0/(1d1**(4.845d0-1.3d0*t4log+1.62d0*t4log*t4log))
+@var: ncrinv = 2d0*n(idx_H2)/Hnuclei*(ch6-ch5)+ch5
+@var: h2var0 = 1d0/(1d0+Hnuclei*ncrinv)
+@var: h2_low_n = 1.2d-16*sqrt(T)*exp(-(1d0+5.48d0/Te)) / (sqrt(4.5d3)*exp(-(1d0+5.48d0/(8.617343d-5*4.5d3))))
+# the following formula for h2_high_n is not entirely correct as it is only valid for T<300K. But I consider this as a reasonable assumption, as H2 is anyway mostly present for T < 300 K.
+@var: h2_high_n = max(1.1d-9*T**0.135d0*exp(-5.2d4*invT),1d-40)
+@var: ch3 = max(h2_low_n/h2_high_n, 1d-100)
+@var: h2var1 = ch3**h2var0
+9,H2,H,,H,H,H,,NONE,3d2,1.1d-9*T**0.135d0*exp(-5.2d4*invT)*h2var1
+10,H2,H,,H,H,H,,>3d2,NONE,3.7d-8*invT**0.485d0*exp(-5.2d4*invT)*h2var1
+
+@var: h2_high_n_h2 = max(6.5d-8*exp(-5.2d4*invT)*invT**0.485d0,1d-40)
+@var: h2_low_n_h2 = 5.996d-30*T**4.1881d0*exp(-54657.4d0*invT)/(1d0+6.761d-06*T)**5.6881d0
+@var: ch4 = max(h2_low_n_h2/h2_high_n_h2,1d-100)
+@var: h2var2 = ch4**h2var0
+11,H2,H2,,H,H,H,H,NONE,NONE,6.5d-8*exp(-5.2d4*invT)*invT**0.485d0*h2var2
+
+#H2 ON GRAINS WITH RATE APPROXIMATION
+@format:idx,R,R,P,rate
+@var:fA = 1d0/(1d0+1d4*exp(-6d2/(user_Tdust+1d-40)))
+12,H,H,H2,user_dust_to_gas_ratio*user_deff*3d-18*sqrt(T)*fA/(1d0+0.04d0*sqrt(T+user_Tdust)+0.002d0*T+8d-6*Tgas**2.)*Hnuclei/max(n(idx_H),1d-40)
+
+@format:idx,R,R,R,P,P,P,P,rate
+13,H2,,,H,H,,,3.3d-11*user_Ghab*exp(-3.5d0*user_Av)*user_H2self
+# fudge factor to get HI production right, as it is actually H2->H2+ + e-
+14,H2,,,H,H,,,0.5d0*2d0*user_crate
+15,H2,,,H,H,,,2.2d-1*user_crate
+16,H2,,,H,H,,,1d0*user_uv_ion
+
+
+###### reactions listed for CO formation/destruction
+
+@format:idx,R,R,R,R,R,P,P,P,P,rate
+
+@var: gamma_chx = 2.94d-10*user_Ghab*exp(-2.5d0*user_Av)
+@var: beta = 5d-10*n(idx_O)/(5d-10*n(idx_O)+gamma_chx)
+17,C+,E,H2,O,,CO,H,H,,5d-16*beta*1d0/(max(n(idx_E),1d-40)*max(n(idx_O),1d-40))
+18,CO,,,,,C+,O,E,,1.235d-10*user_Ghab*exp(-2.5d0*user_Av)*user_COself
+19,CO,,,,,C+,O,E,,3.861003861d0*user_uv_ion
+
+@noTab_end
+
+
+
+
+
+##### THIS DOES NOT belong to the network any more but contains quantities/functions which have to be calculated before the krome call. As an example how this is done, I refer to the AV_slab.F90 file, which contains a chemistry benchmark test.
+#
+#
+####### Step 0 #######
+#
+#Setting up the network with the python krome "wrapper". Note that the option "-compact" is optional, as it combines several modules into 1 file called krome_all.f90. Whether this is desirable for the usage with  Julia, I cannot assess.
+#
+#
+#python3 ./krome -n networks/react_chnet5 -noRecCheck -compact
+#
+#
+####### Step 1 #######
+#
+#Set the volume densities (derived from Trixy or per hand somewhere), e.g. n_i = rho_i/(specific_molecular_weight * m_proton)
+#
+#n(idx_*) = ...
+#
+#
+####### Step 2 #######
+#
+#Several quantities have to be calculated beforehand. This is ONLY needed for Trixy, not in the benchmark test AV_slab.F90
+#
+#rho = units g/cm^3 (density given in these units)
+#
+#
+#2a. user_Av = function(rho) = 0.103*exp(0.92*((rho)/1.4/1.67e-24)**0.148)
+#
+## this just contains the results of the gnuplot fitting routine
+##lav(x) = log(a) + b*((10**x)/1.4/1.67e-24)**c
+##a               = 0.103162         +/- 0.001768     (1.714%)
+##b               = 0.917563         +/- 0.01528      (1.666%)
+##c               = 0.147636         +/- 0.001211     (0.82%)
+#
+#2b. user_H2self = function(rho)
+#f(x) = a+b*x+c*x**2+d*x**3+g*x**4
+#a               = -3456.32         +/- 153          (4.426%)
+#b               = -619.877         +/- 28.16        (4.543%)
+#c               = -41.6764         +/- 1.936        (4.645%)
+#d               = -1.24176         +/- 0.05889      (4.742%)
+#g               = -0.0138145       +/- 0.000669     (4.843%)
+#
+#user_H2self  = 10**f(log10(rho)) in limits log10(rho) = -26 to -18, below/above limit to boundary values
+#
+#2c. user_COself = function(rho)
+#
+#i(x) = j+k*x+m*x**2+n*x**3
+#j               = -105.29          +/- 9.734        (9.245%)
+#k               = -13.1089         +/- 1.219        (9.302%)
+#n               = -0.00759155      +/- 0.0007062    (9.302%)
+#m               = -0.545986        +/- 0.05086      (9.315%)
+#
+#q(x) = r+s*x+t*x**2+u*x**3+v*x**4
+#r               = -2173.2          +/- 1360         (62.59%)
+#s               = -489.642         +/- 273.1        (55.77%)
+#t               = -41.1168         +/- 20.53        (49.93%)
+#u               = -1.51947         +/- 0.6851       (45.09%)
+#v               = -0.0208235       +/- 0.008563     (41.12%)
+#
+#user_COself = -26<log10(rho)<=-22 = 10**i(log10(rho))
+#user_COself = -22<log10(rho)<=-18 = 10**q(log10(rho))
+#
+#
+#
+###### Step 3 #######
+#
+#more calculations for reactions 3, 5 and 7. This is needed also in the benchmark test (the format is given currently in Fortran code)
+#
+#The following 5 variables are a simulation/setup dependent. Just make sure that they are set somehow.
+#
+#The variable Ghab is a simulation/setup-specific global variable.
+#"T" is the gas temperature.
+#set dust_to_gas_ratio = 1.
+#set AV_conversion_factor = simulation/setup-specific global variable (see AV_slab.F90)
+#Hnuclei = krome_get_Hnuclei(n(:)) (not needed in benchmark test)
+#
+#
+#
+### FOR reaction 3
+#
+#     fshield_dust    = exp(-2.5e0 * user_Av)
+#     
+#     ch34 = 5.087d2 * T**1.586d-2
+#     ch35 = -0.4723d0 - 1.102d-5 * log(T)
+#
+#
+#     G_dust  = Ghab * fshield_dust
+#
+#     if (n(idx_E) .eq. 0e0) then
+#c If the fractional ionization is zero, then there won't be any recombination,
+#c so the value we use for phi doesn't matter too much -- 1d20 is simply an 
+#c arbitrary large number
+#c 
+#        phi = 1d20
+#      else
+#        phi = G_dust * sqrt(T) / (n(idx_E))
+#      endif
+#
+#
+#      if (phi .lt. 1e-6) then
+#        h_gr = 1.225e-13 * dust_to_gas_ratio
+#      else
+#        hgrvar1  = 8.074e-6 * phi**1.378e0
+#        hgrvar2  = (1e0 + ch34 * phi**ch35)
+#        h_gr     = 1.225e-13 * dust_to_gas_ratio /
+#     $             (1e0 + hgrvar1 * hgrvar2)
+#      endif
+#      
+#      
+#    
+### For reaction 5
+#
+#
+#
+#       NHtot = user_Av / (dust_to_gas_ratio * AV_conversion_factor)
+#
+#
+#      subroutine calc_xray(NH, abe, ion, heat)
+#      implicit none
+##include "param.h"
+##include "cool.h"
+#      REAL NH, abe, ion, heat
+#      REAL p1, p2, f4, f5, f6
+#
+#c We set a floor on NH of 1e18 cm^-2, as the fit in Wolfire et al is
+#c intended for column densities above this value, and at this v. low
+#c column density, we should, strictly speaking, also be worrying about
+#c Lyman continuum photons
+#c
+#c We set an upper limit on NH of 1e23 cm^-2, to avoid potential 
+#c numerical problems for larger NH, and because at this value,
+#c X-rays are ineffective compared to cosmic rays in any case
+#c
+#
+#      abe = n(idx_E)/Hnuclei
+#
+#      p1 = log10(NHtot / 1e18)
+#      if (p1 .lt. 0e0) then
+#        p1 = 0e0
+#      elseif (p1 .gt. 5e0) then
+#        p1 = 5e0
+#      endif
+#
+#      if (abe .lt. 1e-4) then
+#        p2 = -4.
+#      elseif (abe .gt. 0.1) then
+#        p2 = -1.
+#      else
+#        p2 = log10(abe)
+#      endif
+#
+#      f4 = 1.06  + 4.08e-2 * p2 + 6.51e-3 * p2**2e0
+#      f5 = 1.90  + 0.678   * p2 + 0.113   * p2**2e0
+#      f6 = 0.990 - 2.74e-3 * p2 + 1.13e-3 * p2**2e0
+#      
+#      ion = f4 * (-15.6 - 1.10 * p1 + 9.13e-2 * p1**2e0) 
+#     $      + f5 * 0.87 * exp(-((p1 - 0.41) / 0.84)**2e0)
+#
+#      heat = f6 * (-26.5 - 0.920 * p1 + 5.89e-2 * p1**2e0)
+#     $     + f6 * 0.96 * exp(-((p1 - 0.38) / 0.87)**2e0)
+#
+#      ion = 1e1**(ion)
+#      heat = 1e1**(heat)
+#
+#      return
+#      end
+#      
+#      
+### FOR reaction 7
+#
+#
+#For the moment, simply set uv_ion = uv_heat == 0
+#
+### the following is not needed currently
+##
+##c
+##c     Computes UV heating & ionization rates
+##c     BASED ON:
+##c     OUTPUT: uv_ion ion ionization rate [s-1]
+##c             uv_heat heating rate [erg s-1]
+##c     
+##c     phener photon excess energy [erg]
+##c     phion photon ionization energy [erg]
+##c
+##      subroutine calc_uv(Lyc_EnergyRate,Lyc_PhotonExceEnergy,
+##     $                  uv_ion, uv_heat)
+##
+##      implicit none
+###include "param.h"
+##include "cool.h"
+##      REAL Lyc_EnergyRate, Lyc_PhotonExceEnergy
+##      REAL uv_ion, uv_heat
+##
+##      uv_heat = -1e0 * Lyc_EnergyRate
+##      uv_ion = 0e0
+##      if (Lyc_PhotonExceEnergy .ne. 0e0) then
+##        uv_ion = Lyc_EnergyRate / Lyc_PhotonExceEnergy 
+##      endif
+##
+##      return
+##      end
+#      
+#  
+###### Step 4 #######
+#
+#All variables user_* declared in the network file need to be set first. See AV_slab.F90
+#
+# call krome_set_user_*
+# 
+#     
+###### Step 5 #######   
+#
+#
+# call krome()
+#

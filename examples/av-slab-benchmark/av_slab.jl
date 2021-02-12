@@ -122,7 +122,7 @@ function av_slab(io::IO=stdout)
         p1 = log10(NHtot / 1e18)
         if p1 < 0e0
           p1 = 0e0
-        elseif p1 > 5e0 then
+        elseif p1 > 5e0
           p1 = 5e0
         end
 

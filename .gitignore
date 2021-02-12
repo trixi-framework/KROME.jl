@@ -2,3 +2,4 @@
 deps/*.log
 deps/libkrome.jl
 deps/krome
+**/reactions_verbatim.dat

@@ -1,0 +1,18 @@
+set up krome with python3 ./krome -n networks/react_chnet5 -noRecCheck -compact
+
+
+Copy all krome files to folder which contains AV_slab.F90 (the test.f90 file is NOT needed), including file reactions_verbatim.dat
+
+make
+(I experienced problems when one of the modules is not compiled before, so I had by hand to first execute the command:
+gfortran -fdefault-real-8 -fdefault-double-8 -O3 -ffree-line-length-none -c krome_user_commons.f90 )
+
+
+run AV_slab_F1
+
+
+
+to run the "F4" test change in AV_slab.F90 the values in line 78+79 to the alternative values given behind the "!". Recompile and run
+
+
+For comparison I attached the plots and the output of the benchmark test.

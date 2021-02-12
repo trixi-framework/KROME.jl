@@ -17,6 +17,10 @@ can be called by the Julia process while building the package:
 * `make`
 * GNU Fortran compiler (`gfortran`)
 
+Also note that KROME has primarily been developed for Linux. Some success has been
+reported for macOS, but your mileage might vary. Windows does not seem to be
+supported.
+
 
 ## Installation
 Clone this package, enter the package directory, and build the package:
@@ -26,12 +30,27 @@ cd KROME.jl
 julia --project=. -e 'using Pkg; Pkg.build()'
 ```
 
+By default, this will build the KROME library with the `hello` test activated,
+i.e., passing `-test=hello` to the KROME preprocessing script. However, usually
+you will want to pass your own network file and possibly other options to KROME
+during preprocessing. This can be achieved via the environment variable
+`JULIA_KROME_CUSTOM_ARGS`, which accepts a `;`-separated list of arguments that
+will be passed to the `krome` preprocessor. For example, to provide a custom
+network file while disabling the recombinations check, you can run the build
+command above with
+```shell
+JULIA_KROME_CUSTOM_ARGS="-n;abs/path/to/react_skynet;-noRecCheck" julia --project=. -e 'using Pkg; Pkg.build()'
+```
+Please note that you have to specify the *absolute* path to the network file.
+
 
 ## Usage
 Have a look at the examples in [examples/](examples/) to find out how to use
-KROME.jl. Right now there is a single example available. To run it, enter the
-package directory, start Julia with `julia --project`, and execute the
-following:
+KROME.jl. Right now there are two examples available.
+
+### `test_hello`
+To run this example, enter the package directory, start Julia with `julia
+--project`, and execute the following:
 ```julia
 julia> isfile("examples/test_hello/julia.66")
 false
@@ -46,6 +65,23 @@ In gnuplot type
 julia> println(read("examples/test_hello/julia.66", String))
 ```
 This will print out the contents of the newly created file `julia.66`.
+
+### `av-slab-benchmark`
+To run this example, you first need to build KROME with a different network
+file. Enter the package directory and execute
+```shell
+JULIA_KROME_CUSTOM_ARGS="-n;$(pwd)/examples/av-slab-benchmark/react_chnet5;-noRecCheck" julia --project=. -e 'using Pkg; Pkg.build()'
+```
+After re-building KROME successfully, start Julia with `julia --project` and
+execute the following:
+```julia
+julia> include("examples/av-slab-benchmark/av_slab.jl")
+
+julia> av_slab()
+```
+
+This will start the example and printing the chemical network updates as they
+are computed. Note that this example takes a minute or two to fully run through.
 
 
 ## Authors

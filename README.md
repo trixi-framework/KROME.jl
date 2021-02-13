@@ -1,5 +1,9 @@
 # KROME.jl
 
+[![Build Status](https://github.com/trixi-framework/KROME.jl/workflows/CI/badge.svg)](https://github.com/trixi-framework/KROME.jl/actions?query=workflow%3ACI)
+[![Coveralls](https://coveralls.io/repos/github/trixi-framework/KROME.jl/badge.svg?branch=main)](https://coveralls.io/github/trixi-framework/KROME.jl?branch=main)
+[![License: MIT](https://img.shields.io/badge/License-MIT-success.svg)](https://opensource.org/licenses/MIT)
+
 **KROME.jl** is a Julia package that wraps [KROME](http://kromepackage.org), a
 Fortran library for including chemistry and microphysics in astrophysics
 simulations.

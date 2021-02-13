@@ -35,6 +35,11 @@ python3_exec = get(ENV, "JULIA_KROME_PYTHON3_EXEC", "python3")
 
 cd(clone_path) do
   setup_cmd = `$python3_exec krome $krome_args`
+  # Set locale if unset
+  if !haskey(ENV, "LC_ALL")
+    @info "Setting environment variable LC_ALL to 'C.UTF-8' to avoid Python errors"
+    ENV["LC_ALL"] = "C.UTF-8"
+  end
   @info "Running command '$setup_cmd' in '$clone_path'..."
   run(setup_cmd)
 end

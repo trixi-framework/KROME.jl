@@ -2,3 +2,6 @@
 CBindingGen = "308a6e0c-0495-45e1-b1ab-67fb455a0d77"
 LibGit2 = "76f85450-5226-5b5a-8eaa-529ad045b433"
 Libdl = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
+
+[compat]
+CBindingGen = "0.4"

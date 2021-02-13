@@ -1,5 +1,7 @@
 # KROME.jl
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-success.svg)](https://opensource.org/licenses/MIT)
+
 **KROME.jl** is a Julia package that wraps [KROME](http://kromepackage.org), a
 Fortran library for including chemistry and microphysics in astrophysics
 simulations.

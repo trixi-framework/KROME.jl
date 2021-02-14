@@ -98,7 +98,8 @@ end
 
 # Write generated C bindings to file
 @info "Write generated C bindings to file..."
-krome_library = joinpath(build_dir, "libkrome." * Libdl.dlext)
+# krome_library = joinpath(build_dir, "libkrome." * Libdl.dlext)
+krome_library = joinpath(build_dir, "libkrome.so") # TODO: modify KROME to use proper extension on macOS
 const bindings_filename = joinpath(@__DIR__, "libkrome.jl")
 open(bindings_filename, "w+") do io
   generate(io, krome_library => cvts)

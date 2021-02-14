@@ -32,7 +32,7 @@ jobs:
           # - 'nightly'
         os:
           - ubuntu-latest
-          # - macOS-latest
+          - macOS-latest
         arch:
           - x64
     steps:
@@ -51,6 +51,12 @@ jobs:
             ${{ runner.os }}-test-${{ env.cache-name }}-
             ${{ runner.os }}-test-
             ${{ runner.os }}-
+      - name: Set up gfortran-10 as gfortran (macOS only)
+        if: contains(matrix.os, 'macOS')
+        run: alias gfortran=gfortran-10
+      - name: Test gfortran alias (macOS only)
+        if: contains(matrix.os, 'macOS')
+        run: gfortran --version
       - uses: julia-actions/julia-buildpkg@v1
         env:
           PYTHON: ""

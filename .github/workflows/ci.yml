@@ -51,16 +51,20 @@ jobs:
             ${{ runner.os }}-test-${{ env.cache-name }}-
             ${{ runner.os }}-test-
             ${{ runner.os }}-
-      - name: Set up gfortran-10 as gfortran (macOS only)
+      - name: Set up gfortran-10 as gfortran and gcc-10 as gcc (macOS only)
         if: contains(matrix.os, 'macOS')
         run: |
           mkdir -p "$HOME/mypath"
           echo "$HOME/mypath" >> $GITHUB_PATH
           printf '#!/bin/bash'"\ngfortran-10 \"\${@}\"\n" > "$HOME/mypath/gfortran"
           chmod a+x "$HOME/mypath/gfortran"
-      - name: Test gfortran (macOS only)
+          printf '#!/bin/bash'"\ngcc-10 \"\${@}\"\n" > "$HOME/mypath/gcc"
+          chmod a+x "$HOME/mypath/gcc"
+      - name: Test gfortran and gcc (macOS only)
         if: contains(matrix.os, 'macOS')
-        run: gfortran --version
+        run: |
+          gfortran --version
+          gcc --version
       - uses: julia-actions/julia-buildpkg@v1
         env:
           PYTHON: ""

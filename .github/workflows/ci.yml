@@ -53,8 +53,12 @@ jobs:
             ${{ runner.os }}-
       - name: Set up gfortran-10 as gfortran (macOS only)
         if: contains(matrix.os, 'macOS')
-        run: alias gfortran=gfortran-10
-      - name: Test gfortran alias (macOS only)
+        run: |
+          mkdir -p "$HOME/mypath"
+          echo "$HOME/mypath" >> $GITHUB_PATH
+          printf '#!/bin/bash'"\ngfortran-10 \"\${@}\"\n" > "$HOME/mypath/gfortran"
+          chmod a+x "$HOME/mypath/gfortran"
+      - name: Test gfortran (macOS only)
         if: contains(matrix.os, 'macOS')
         run: gfortran --version
       - uses: julia-actions/julia-buildpkg@v1

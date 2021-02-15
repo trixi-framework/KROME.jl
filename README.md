@@ -21,9 +21,9 @@ can be called by the Julia process while building the package:
 * `make`
 * GNU Fortran compiler (`gfortran`)
 
-Also note that KROME has primarily been developed for Linux. Some success has been
-reported for macOS, but your mileage might vary. Windows does not seem to be
-supported.
+Also note that KROME has primarily been developed for Linux, but also works on
+macOS. Both OS are automatically tested with KROME.jl. Windows is not supported
+by KROME.
 
 
 ## Installation

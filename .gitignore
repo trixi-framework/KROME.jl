@@ -1,5 +1,5 @@
 **/Manifest.toml
 deps/*.log
-deps/libkrome.jl
+deps/libkrome.*
 deps/krome
 **/reactions_verbatim.dat

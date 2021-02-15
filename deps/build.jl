@@ -63,12 +63,6 @@ cd(build_dir) do
   run(make_cmd)
 end
 
-# Copy reactions_verbatim.dat from build directory to deps/
-reactions_source = joinpath(build_dir, "reactions_verbatim.dat")
-reactions_target = joinpath(@__DIR__, "reactions_verbatim.dat")
-@info "Copying '$reactions_source' to '$reactions_target'..."
-cp(reactions_source, reactions_target, force=true)
-
 # Generate C bindings
 @info "Generate C bindings..."
 
@@ -98,9 +92,22 @@ end
 
 # Write generated C bindings to file
 @info "Write generated C bindings to file..."
-# krome_library = joinpath(build_dir, "libkrome." * Libdl.dlext)
-krome_library = joinpath(build_dir, "libkrome.so") # TODO: modify KROME to use proper extension on macOS
+krome_library = joinpath(@__DIR__, "libkrome." * Libdl.dlext)
 const bindings_filename = joinpath(@__DIR__, "libkrome.jl")
 open(bindings_filename, "w+") do io
   generate(io, krome_library => cvts)
 end
+
+# Final procedure: copy products (library + reactions) to `deps/` such that in case of a build
+# problem, the previous files remain intact
+# Copy KROME library from build directory to deps/
+library_source = joinpath(build_dir, "libkrome.so")
+library_target = krome_library
+@info "Copying '$library_source' to '$library_target'..."
+cp(library_source, library_target, force=true)
+
+# Copy reactions_verbatim.dat from build directory to deps/
+reactions_source = joinpath(build_dir, "reactions_verbatim.dat")
+reactions_target = joinpath(@__DIR__, "reactions_verbatim.dat")
+@info "Copying '$reactions_source' to '$reactions_target'..."
+cp(reactions_source, reactions_target, force=true)

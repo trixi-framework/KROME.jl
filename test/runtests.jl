@@ -14,7 +14,7 @@ mkdir(outdir)
 end
 
 @testset "examples_dir" begin
-  @test basename(examples_dir()) == "examples"
+  @test basename(KROME.examples_dir()) == "examples"
 end
 
 # need to change to outdir to have `reactions_verbatim.dat` present

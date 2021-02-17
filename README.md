@@ -59,28 +59,28 @@ To run this example, start Julia and execute the following:
 ```julia
 julia> using KROME
 
-julia> include(joinpath(examples_dir(), "test_hello", "test_hello.jl"));
+julia> include(joinpath(KROME.examples_dir(), "test_hello", "test_hello.jl"));
 
 julia> test_hello()
-Test OK!
-In gnuplot type
- load 'plot.gps'
-
-julia> println(read("julia.66", String))
 ```
-This will print out the contents of the newly created file `julia.66`.
+This will print out the abundancies as the chemical network evolves in time. To
+store the results in a file, e.g., `test_hello.txt`, change the last line of the
+snippet above to
+```julia
+julia> open("test_hello.txt", "w+") do io; test_hello(io); end
+```
 
 ### av-slab-benchmark
 To run this example, you first need to build KROME.jl with a different network
 file by executing
 ```shell
-KROME_NETWORK_FILE=$(julia -e 'using KROME; println(joinpath(examples_dir(), "av-slab-benchmark", "react_chnet5"))') \
+KROME_NETWORK_FILE=$(julia -e 'using KROME; println(joinpath(KROME.examples_dir(), "av-slab-benchmark", "react_chnet5"))') \
   JULIA_KROME_CUSTOM_ARGS="-n;$KROME_NETWORK_FILE;-noRecCheck" \
   julia -e 'using Pkg; Pkg.build("KROME")'
 ```
 The command
 ```shell
-julia -e 'using KROME; println(joinpath(examples_dir(), "av-slab-benchmark", "react_chnet5"))'
+julia -e 'using KROME; println(joinpath(KROME.examples_dir(), "av-slab-benchmark", "react_chnet5"))'
 ```
 is used here to obtain the path to the chemical network file from the
 corresponding example directory of the KROME.jl package.
@@ -89,7 +89,7 @@ After re-building KROME.jl successfully, start Julia and execute the following:
 ```julia
 julia> using KROME
 
-julia> include(joinpath(examples_dir(), "av-slab-benchmark", "av_slab.jl"))
+julia> include(joinpath(KROME.examples_dir(), "av-slab-benchmark", "av_slab.jl"))
 
 julia> av_slab()
 ```

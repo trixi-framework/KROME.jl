@@ -5,7 +5,7 @@ using CBinding: 𝐣𝐥
 
 include("libkrome.jl")
 
-export install_reactions_verbatim, examples_dir
+export install_reactions_verbatim
 
 
 """

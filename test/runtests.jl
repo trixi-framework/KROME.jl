@@ -13,6 +13,10 @@ mkdir(outdir)
   @test isfile(joinpath(outdir, "reactions_verbatim.dat"))
 end
 
+@testset "examples_dir" begin
+  @test basename(examples_dir()) == "examples"
+end
+
 # need to change to outdir to have `reactions_verbatim.dat` present
 @testset "change directory" begin
   @test_nowarn cd(outdir)

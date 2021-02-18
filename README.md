@@ -47,6 +47,13 @@ JULIA_KROME_CUSTOM_ARGS="-n;abs/path/to/react_skynet;-noRecCheck" julia --projec
 ```
 Please note that you have to specify the *absolute* path to the network file.
 
+Next to the arguments to the `krome` preprocessing script, you can also
+configure which Python 3 executable to use by setting the environment variable
+`JULIA_KROME_PYTHON3_EXEC` to its full path. Furthermore, you can disable
+compiler optimizations for the KROME library by setting the environment variable
+`JULIA_KROME_OPTIMIZED_BUILD` to something other than `true`. By default,
+optimizations are enabled.
+
 
 ## Usage
 Have a look at the examples in [examples/](examples/) to find out how to use

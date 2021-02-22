@@ -18,7 +18,7 @@
 using KROME
 using Printf
 
-function test_hello()
+function test_hello(io::IO=stdout)
   cd(@__DIR__) do
     install_reactions_verbatim()
 
@@ -33,25 +33,19 @@ function test_hello()
     dt = fill(1e-5) # time-step (arbitrary)
     t = 0.0 # time (arbitrary)
 
-    open("julia.66", "w") do io
-      println(io, "#time  FK1 FK2 FK3")
-      while true
-        dt[] = dt[] * 1.1 # increase timestep
-        krome(x, Tgas, dt) # call KROME
-        print(io, fsn(t))
-        for value in x
-          print(io, fsn(value))
-        end
-        println(io)
-        t = t + dt[] # increase time
-        t > 5 && break # break loop after 5 time units
+    println(io, "#time  FK1 FK2 FK3")
+    while true
+      dt[] = dt[] * 1.1 # increase timestep
+      krome(x, Tgas, dt) # call KROME
+      print(io, fsn(t))
+      for value in x
+        print(io, fsn(value))
       end
+      println(io)
+      t = t + dt[] # increase time
+      t > 5 && break # break loop after 5 time units
     end
   end
-
-  println("Test OK!")
-  println("In gnuplot type")
-  println(" load 'plot.gps'")
 end
 
 # Return formatted value in Fortran scientific notation

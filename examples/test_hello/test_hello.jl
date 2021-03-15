@@ -19,32 +19,28 @@ using KROME
 using Printf
 
 function test_hello(io::IO=stdout)
-  cd(@__DIR__) do
-    install_reactions_verbatim()
+  krome_init() # init krome (mandatory)
 
-    krome_init() # init krome (mandatory)
+  nmols = krome_nmols()[] # read Fortran module variable
+  x = zeros(nmols) # default abundances (number density)
+  idx_FK1 = krome_idx_FK1()[] + 1 # Julia has 1-based indices
+  x[idx_FK1] = 1.0 # FK1 initial abundance (number density)
 
-    nmols = krome_nmols()[] # read Fortran module variable
-    x = zeros(nmols) # default abundances (number density)
-    idx_FK1 = krome_idx_FK1()[] + 1 # Julia has 1-based indices
-    x[idx_FK1] = 1.0 # FK1 initial abundance (number density)
+  Tgas = fill(1e2) # gas temperature, not used (K)
+  dt = fill(1e-5) # time-step (arbitrary)
+  t = 0.0 # time (arbitrary)
 
-    Tgas = fill(1e2) # gas temperature, not used (K)
-    dt = fill(1e-5) # time-step (arbitrary)
-    t = 0.0 # time (arbitrary)
-
-    println(io, "#time  FK1 FK2 FK3")
-    while true
-      dt[] = dt[] * 1.1 # increase timestep
-      krome(x, Tgas, dt) # call KROME
-      print(io, fsn(t))
-      for value in x
-        print(io, fsn(value))
-      end
-      println(io)
-      t = t + dt[] # increase time
-      t > 5 && break # break loop after 5 time units
+  println(io, "#time  FK1 FK2 FK3")
+  while true
+    dt[] = dt[] * 1.1 # increase timestep
+    krome(x, Tgas, dt) # call KROME
+    print(io, fsn(t))
+    for value in x
+      print(io, fsn(value))
     end
+    println(io)
+    t = t + dt[] # increase time
+    t > 5 && break # break loop after 5 time units
   end
 end
 

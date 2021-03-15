@@ -95,12 +95,8 @@ end
 # Final procedure: copy products (library + reactions) to `deps/` such that in case of a build
 # problem, the previous files remain intact
 # Copy KROME library from build directory to deps/
-library_source = joinpath(build_dir, "libkrome.so")
+library_source = joinpath(build_dir, "libkrome." * Libdl.dlext)
 library_target = krome_library
-@info "contents of build dir: $build_dir"
-for f in readdir(build_dir)
-  println(joinpath(build_dir, f))
-end
 @info "Copying '$library_source' to '$library_target'..."
 cp(library_source, library_target, force=true)
 

@@ -27,11 +27,13 @@ by KROME.
 
 
 ## Installation
-Clone this package, enter the package directory, and build the package:
+If you have not yet installed Julia, please [follow the instructions for your
+operating system](https://julialang.org/downloads/platform/). KROMEjl works
+with Julia v1.5.
+
+You can then install KROME.jl by executing
 ```shell
-git clone git@github.com:trixi-framework/KROME.jl.git
-cd KROME.jl
-julia --project=. -e 'using Pkg; Pkg.build()'
+julia -e 'using Pkg; Pkg.add("KROME")'
 ```
 
 By default, this will build the KROME library with the `hello` test activated,
@@ -43,7 +45,7 @@ will be passed to the `krome` preprocessor. For example, to provide a custom
 network file while disabling the recombinations check, you can run the build
 command above with
 ```shell
-JULIA_KROME_CUSTOM_ARGS="-n;abs/path/to/react_skynet;-noRecCheck" julia --project=. -e 'using Pkg; Pkg.build()'
+JULIA_KROME_CUSTOM_ARGS="-n;abs/path/to/react_skynet" julia -e 'using Pkg; Pkg.build("KROME")'
 ```
 Please note that you have to specify the *absolute* path to the network file.
 
@@ -59,34 +61,42 @@ optimizations are enabled.
 Have a look at the examples in [examples/](examples/) to find out how to use
 KROME.jl. Right now there are two examples available.
 
-### `test_hello`
-To run this example, enter the package directory, start Julia with `julia
---project`, and execute the following:
+### test_hello
+To run this example, start Julia and execute the following:
 ```julia
-julia> isfile("examples/test_hello/julia.66")
-false
+julia> using KROME
 
-julia> include("examples/test_hello/test_hello.jl");
+julia> include(joinpath(KROME.examples_dir(), "test_hello", "test_hello.jl"));
 
 julia> test_hello()
-Test OK!
-In gnuplot type
- load 'plot.gps'
-
-julia> println(read("examples/test_hello/julia.66", String))
 ```
-This will print out the contents of the newly created file `julia.66`.
-
-### `av-slab-benchmark`
-To run this example, you first need to build KROME with a different network
-file. Enter the package directory and execute
-```shell
-JULIA_KROME_CUSTOM_ARGS="-n;$(pwd)/examples/av-slab-benchmark/react_chnet5;-noRecCheck" julia --project=. -e 'using Pkg; Pkg.build()'
-```
-After re-building KROME successfully, start Julia with `julia --project` and
-execute the following:
+This will print out the abundancies as the chemical network evolves in time. To
+store the results in a file, e.g., `test_hello.txt`, change the last line of the
+snippet above to
 ```julia
-julia> include("examples/av-slab-benchmark/av_slab.jl")
+julia> open("test_hello.txt", "w+") do io; test_hello(io); end
+```
+
+### av-slab-benchmark
+To run this example, you first need to build KROME.jl with a different network
+file by executing
+```shell
+KROME_NETWORK_FILE=$(julia -e 'using KROME; println(joinpath(KROME.examples_dir(), "av-slab-benchmark", "react_chnet5"))') \
+  JULIA_KROME_CUSTOM_ARGS="-n;$KROME_NETWORK_FILE;-noRecCheck" \
+  julia -e 'using Pkg; Pkg.build("KROME")'
+```
+The command
+```shell
+julia -e 'using KROME; println(joinpath(KROME.examples_dir(), "av-slab-benchmark", "react_chnet5"))'
+```
+is used here to obtain the path to the chemical network file from the
+corresponding example directory of the KROME.jl package.
+
+After re-building KROME.jl successfully, start Julia and execute the following:
+```julia
+julia> using KROME
+
+julia> include(joinpath(KROME.examples_dir(), "av-slab-benchmark", "av_slab.jl"))
 
 julia> av_slab()
 ```

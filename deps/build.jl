@@ -2,9 +2,12 @@ import LibGit2
 using CBindingGen
 using Libdl
 
+# Set base path
+deps_dir = @__DIR__
+
 # Clone/update repo
 krome_repo = "https://bitbucket.org/tgrassi/krome.git"
-clone_path = joinpath(@__DIR__, "krome")
+clone_path = joinpath(deps_dir, "krome")
 build_dir = joinpath(clone_path, "build")
 build_dir_backup = joinpath(clone_path, "build.orig")
 if isdir(clone_path)
@@ -28,7 +31,9 @@ else
 end
 
 # Call krome to set up a build
-krome_default_args = ["-interfacePy", "-interfaceC", "-unsafe"]
+reactions_target = joinpath(deps_dir, "reactions_verbatim.dat")
+krome_default_args = ["-interfacePy", "-interfaceC", "-unsafe",
+                      "-verbatimFilename=$reactions_target"]
 krome_custom_args = split(get(ENV, "JULIA_KROME_CUSTOM_ARGS", "-test=hello"), ";")
 krome_args = vcat(krome_default_args, krome_custom_args)
 python3_exec = get(ENV, "JULIA_KROME_PYTHON3_EXEC", "python3")
@@ -86,8 +91,8 @@ end
 
 # Write generated C bindings to file
 @info "Write generated C bindings to file..."
-krome_library = joinpath(@__DIR__, "libkrome." * Libdl.dlext)
-const bindings_filename = joinpath(@__DIR__, "libkrome.jl")
+krome_library = joinpath(deps_dir, "libkrome." * Libdl.dlext)
+const bindings_filename = joinpath(deps_dir, "libkrome.jl")
 open(bindings_filename, "w+") do io
   generate(io, krome_library => cvts)
 end
@@ -102,6 +107,5 @@ cp(library_source, library_target, force=true)
 
 # Copy reactions_verbatim.dat from build directory to deps/
 reactions_source = joinpath(build_dir, "reactions_verbatim.dat")
-reactions_target = joinpath(@__DIR__, "reactions_verbatim.dat")
 @info "Copying '$reactions_source' to '$reactions_target'..."
 cp(reactions_source, reactions_target, force=true)

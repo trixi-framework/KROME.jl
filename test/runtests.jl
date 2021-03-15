@@ -8,18 +8,8 @@ mkdir(outdir)
 
 @testset "KROME.jl" begin
 
-@testset "install_reactions_verbatim" begin
-  @test_nowarn install_reactions_verbatim(outdir)
-  @test isfile(joinpath(outdir, "reactions_verbatim.dat"))
-end
-
 @testset "examples_dir" begin
   @test basename(KROME.examples_dir()) == "examples"
-end
-
-# need to change to outdir to have `reactions_verbatim.dat` present
-@testset "change directory" begin
-  @test_nowarn cd(outdir)
 end
 
 @testset "krome_init" begin
@@ -44,12 +34,7 @@ end
   @test isapprox(x, [0.0498010588960098, 0.3466697038199312, 0.6035292015197234])
 end
 
-# change back
-@testset "change directory back" begin
-  @test_nowarn cd(dirname(pwd()))
-end
-
-end
+end # testset "KROME.jl"
 
 # Clean up afterwards: delete output directory
-@test_nowarn rm(outdir, recursive=true)
+rm(outdir, recursive=true)

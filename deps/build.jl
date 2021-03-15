@@ -44,21 +44,15 @@ cd(clone_path) do
   run(setup_cmd)
 end
 
-# Hotfix: include C interface in target `pyinterface`
-makefile = joinpath(build_dir, "Makefile")
-lines = readlines(makefile, keep=true)
-open(makefile, "w+") do io
-  for line in lines
-    if startswith(line, "pyinterface: sharedlib")
-      write(io, "pyinterface: cc = gcc\npyinterface: \$(cobjs)\npyinterface: switchc = -fPIC\npyinterface: objs += \$(cobjs)\n")
-    end
-    write(io, line)
-  end
+# Call make
+if lowercase(get(ENV, "JULIA_KROME_OPTIMIZED_BUILD", "true")) == "true"
+  make_target = "csharedlib_opt"
+else
+  make_target = "csharedlib"
 end
 
-# Call make
 cd(build_dir) do
-  make_cmd = `make pyinterface`
+  make_cmd = `make $make_target`
   @info "Running command '$make_cmd'..."
   run(make_cmd)
 end
@@ -101,7 +95,7 @@ end
 # Final procedure: copy products (library + reactions) to `deps/` such that in case of a build
 # problem, the previous files remain intact
 # Copy KROME library from build directory to deps/
-library_source = joinpath(build_dir, "libkrome.so")
+library_source = joinpath(build_dir, "libkrome." * Libdl.dlext)
 library_target = krome_library
 @info "Copying '$library_source' to '$library_target'..."
 cp(library_source, library_target, force=true)
